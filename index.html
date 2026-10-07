@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050b1f">
+  <title>RICKY.EXE — Year 27 Initializing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;1,400&family=Sora:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/effects.css">
+</head>
+<body>
+  <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open sections menu" aria-expanded="false" hidden>☰</button>
+  <nav class="nav-sheet" id="nav-sheet" aria-label="Sections" hidden></nav>
+
+  <canvas class="fx" id="fx" aria-hidden="true"></canvas>
+  <div class="flash" id="flash" aria-hidden="true"></div>
+
+  <main>
+  <section class="screen" id="screen-countdown" data-title="Countdown" aria-label="Countdown">
+    <h1 class="brand">RICKY.EXE</h1>
+    <p class="sub">YEAR 27 · NOT YET AVAILABLE</p>
+    <p class="status" id="cd-status">Something is being prepared. It unlocks on October 29.</p>
+    <div class="countdown" id="countdown" role="timer" aria-label="Time left until Ricky's birthday">
+      <div class="cd-cell"><span class="cd-num" id="cd-days">00</span><span class="cd-label">days</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">hours</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cd-minutes">00</span><span class="cd-label">min</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cd-seconds">00</span><span class="cd-label">sec</span></div>
+    </div>
+    <button type="button" id="peek-btn">PEEK ANYWAY</button>
+    <p class="feedback" id="peek-msg" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="screen" id="screen-lock" data-title="Locked system" aria-label="Locked system">
+    <h1 class="brand">RICKY.EXE</h1>
+    <p class="sub">YEAR 27 INITIALIZATION</p>
+    <p class="status">A very important system is attempting to access your birthday.</p>
+    <div class="loader" id="lock-loader" aria-hidden="true"><span></span></div>
+    <form class="gate reveal is-hidden" id="gate" hidden novalidate>
+      <p class="verify">Identity verification required.</p>
+      <label for="bday-input">When did Ricky enter the world?</label>
+      <input id="bday-input" type="text" inputmode="numeric" autocomplete="off" placeholder="MM / DD / YYYY" maxlength="14">
+      <button type="submit">UNLOCK YEAR 27</button>
+      <p class="feedback" id="gate-feedback" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+  <section class="screen" id="screen-unlock" data-title="System unlock" aria-label="System unlock">
+    <h2 class="granted reveal is-hidden" id="u-granted">ACCESS GRANTED</h2>
+    <p class="welcome reveal is-hidden" id="u-welcome"></p>
+    <div class="progress-wrap reveal is-hidden" id="u-loaded">
+      <p>27 years of Ricky.exe successfully loaded.</p>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"><span></span></div>
+      <p class="percent" id="u-percent">0%</p>
+    </div>
+    <p class="happy reveal is-hidden" id="u-happy">Happy 27th Birthday. 💙</p>
+    <p class="waiting reveal is-hidden" id="u-waiting">There's something waiting for you.</p>
+    <button type="button" class="reveal is-hidden" id="u-continue">CONTINUE</button>
+  </section>
+  <section class="screen" id="screen-confirm" data-title="Confirm" aria-label="Confirm">
+    <h2>Before we continue...</h2>
+    <p>I need you to confirm something.</p>
+    <div class="arena" id="arena">
+      <button type="button" id="ready-btn">YES, I'M READY</button>
+    </div>
+    <p class="feedback" id="dodge-msg" role="status" aria-live="polite"></p>
+  </section>
+  <section class="screen" id="screen-scan" data-title="Ricky scan" aria-label="Ricky scan">
+    <h2 class="scan-title">ANALYZING RICKY...</h2>
+    <ul class="scan" id="scan-list" aria-live="polite"></ul>
+    <p class="scan-result reveal is-hidden" id="scan-result"></p>
+    <button type="button" class="reveal is-hidden" id="scan-continue" data-next>CONTINUE</button>
+  </section>
+  <section class="screen" id="screen-years" data-title="27 years" aria-label="27 years">
+    <h2 class="years"><span class="years-num" id="years-num">0</span> YEARS.</h2>
+    <p class="years-sub reveal is-hidden" id="years-sub">And somehow, one of those years led you here.</p>
+    <p class="years-note reveal is-hidden" id="years-note">A birthday isn't only about the number. It's the moments, the people, the growth, and the memories that made you who you are.</p>
+    <button type="button" class="reveal is-hidden" id="years-continue" data-next>CONTINUE</button>
+  </section>
+  <section class="screen" id="screen-memories" data-title="Memories" aria-label="Memories">
+    <h2 class="mem-title">A FEW THINGS WORTH REMEMBERING</h2>
+    <div class="carousel-wrap">
+      <div class="carousel" id="carousel" tabindex="0" role="region" aria-label="Memories. Swipe or use the arrow buttons to browse."></div>
+      <div class="carousel-ui">
+        <button type="button" id="mem-prev" aria-label="Previous memory">‹</button>
+        <span id="mem-count" aria-live="polite">1 / 1</span>
+        <button type="button" id="mem-next" aria-label="Next memory">›</button>
+      </div>
+    </div>
+    <button type="button" data-next>CONTINUE</button>
+  </section>
+  <section class="screen" id="screen-things" data-title="Things that make you, you" aria-label="Things that make you, you">
+    <h2 class="things-title">THINGS THAT MAKE YOU, YOU</h2>
+    <p class="hint">Tap each one.</p>
+    <div class="things" id="things"></div>
+    <button type="button" data-next>CONTINUE</button>
+  </section>
+  <section class="screen" id="screen-heart" data-title="For Ricky" aria-label="For Ricky">
+    <h2 class="heart-title">For Ricky.</h2>
+    <div class="letter" id="heart-msg"></div>
+    <button type="button" class="reveal is-hidden" id="heart-continue" data-next>CONTINUE</button>
+  </section>
+  <section class="screen" id="screen-wish" data-title="A small wish" aria-label="A small wish">
+    <h2 class="wish-title reveal is-hidden" id="wish-title">One wish for your 27th year...</h2>
+    <div class="wish" id="wish-body"></div>
+    <button type="button" class="reveal is-hidden" id="wish-continue" data-next>CONTINUE</button>
+  </section>
+  <section class="screen" id="screen-final" data-title="The final surprise" aria-label="The final surprise">
+    <h2 class="wait reveal is-hidden" id="f-wait">Wait.</h2>
+    <p class="more reveal is-hidden" id="f-more">There's one more thing.</p>
+    <button type="button" class="reveal is-hidden" id="f-btn">ONE LAST THING</button>
+    <div class="payoff" id="f-payoff" hidden>
+      <h2 class="payoff-title reveal is-hidden">Happy 27th, Ricky.</h2>
+      <ul class="affirm">
+        <li class="reveal is-hidden">You are seen.</li>
+        <li class="reveal is-hidden">You are valued.</li>
+        <li class="reveal is-hidden">You are appreciated.</li>
+        <li class="reveal is-hidden">You are loved.</li>
+      </ul>
+      <p class="glad reveal is-hidden">And I'm really glad you're here.</p>
+      <p class="with-love reveal is-hidden">With love, Paupau 💙</p>
+    </div>
+  </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/screens.js"></script>
+  <script src="js/countdown.js"></script>
+  <script src="js/intro.js"></script>
+  <script src="js/story.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/finale.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
