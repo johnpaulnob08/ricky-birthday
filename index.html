@@ -4,10 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050b1f">
+  <link rel="icon" type="image/png" href="assets/images/ricky-icon.png">
+  <link rel="apple-touch-icon" href="assets/images/ricky-icon.png">
   <title>RICKY.EXE — Year 27 Initializing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;1,400&family=Sora:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Newsreader:ital,wght@0,400;1,400&family=Sora:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/effects.css">
@@ -15,6 +17,9 @@
 <body>
   <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open sections menu" aria-expanded="false" hidden>☰</button>
   <nav class="nav-sheet" id="nav-sheet" aria-label="Sections" hidden></nav>
+
+  <button class="music-btn" id="music-btn" type="button" aria-label="Play music" aria-pressed="false" hidden>▶</button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <canvas class="fx" id="fx" aria-hidden="true"></canvas>
   <div class="flash" id="flash" aria-hidden="true"></div>
@@ -48,6 +53,7 @@
     </form>
   </section>
   <section class="screen" id="screen-unlock" data-title="System unlock" aria-label="System unlock">
+    <img class="mascot" src="assets/images/ricky.png" alt="Ricky wearing a blue birthday hat" width="219" height="440" decoding="async">
     <h2 class="granted reveal is-hidden" id="u-granted">ACCESS GRANTED</h2>
     <p class="welcome reveal is-hidden" id="u-welcome"></p>
     <div class="progress-wrap reveal is-hidden" id="u-loaded">
@@ -60,6 +66,7 @@
     <button type="button" class="reveal is-hidden" id="u-continue">CONTINUE</button>
   </section>
   <section class="screen" id="screen-confirm" data-title="Confirm" aria-label="Confirm">
+    <img class="mascot" src="assets/images/ricky.png" alt="Ricky wearing a blue birthday hat" width="219" height="440" decoding="async">
     <h2>Before we continue...</h2>
     <p>I need you to confirm something.</p>
     <div class="arena" id="arena">
@@ -68,13 +75,15 @@
     <p class="feedback" id="dodge-msg" role="status" aria-live="polite"></p>
   </section>
   <section class="screen" id="screen-scan" data-title="Ricky scan" aria-label="Ricky scan">
+    <img class="mascot" src="assets/images/ricky.png" alt="Ricky wearing a blue birthday hat" width="219" height="440" decoding="async">
     <h2 class="scan-title">ANALYZING RICKY...</h2>
     <ul class="scan" id="scan-list" aria-live="polite"></ul>
     <p class="scan-result reveal is-hidden" id="scan-result"></p>
     <button type="button" class="reveal is-hidden" id="scan-continue" data-next>CONTINUE</button>
   </section>
   <section class="screen" id="screen-years" data-title="27 years" aria-label="27 years">
-    <h2 class="years"><span class="years-num" id="years-num">0</span> YEARS.</h2>
+    <img class="mascot" src="assets/images/ricky.png" alt="Ricky wearing a blue birthday hat" width="219" height="440" decoding="async">
+    <h2 class="years"><button type="button" class="years-num" id="years-num" aria-label="27">0</button> YEARS.</h2>
     <p class="years-sub reveal is-hidden" id="years-sub">And somehow, one of those years led you here.</p>
     <p class="years-note reveal is-hidden" id="years-note">A birthday isn't only about the number. It's the moments, the people, the growth, and the memories that made you who you are.</p>
     <button type="button" class="reveal is-hidden" id="years-continue" data-next>CONTINUE</button>
@@ -92,7 +101,9 @@
     <button type="button" data-next>CONTINUE</button>
   </section>
   <section class="screen" id="screen-things" data-title="Things that make you, you" aria-label="Things that make you, you">
+    <img class="mascot" src="assets/images/ricky.png" alt="Ricky wearing a blue birthday hat" width="219" height="440" decoding="async">
     <h2 class="things-title">THINGS THAT MAKE YOU, YOU</h2>
+    <button type="button" class="tiny-star" id="tiny-star" aria-label="A tiny blue star">✦</button>
     <p class="hint">Tap each one.</p>
     <div class="things" id="things"></div>
     <button type="button" data-next>CONTINUE</button>
@@ -112,7 +123,16 @@
     <p class="more reveal is-hidden" id="f-more">There's one more thing.</p>
     <button type="button" class="reveal is-hidden" id="f-btn">ONE LAST THING</button>
     <div class="payoff" id="f-payoff" hidden>
-      <h2 class="payoff-title reveal is-hidden">Happy 27th, Ricky.</h2>
+      <h2 class="payoff-title arc reveal is-hidden">
+        <span class="sr-only">Happy 27th Birthday, Ricky!</span>
+        <svg class="arc-svg" viewBox="0 0 420 210" aria-hidden="true" focusable="false">
+          <path id="arc-path" d="M 10 98 Q 210 -22 410 98" fill="none"/>
+          <path id="arc-path-2" d="M 40 196 Q 210 150 380 196" fill="none"/>
+          <text class="arc-line1"><textPath href="#arc-path" startOffset="50%" text-anchor="middle">Happy 27th Birthday,</textPath></text>
+          <text class="arc-line2"><textPath href="#arc-path-2" startOffset="50%" text-anchor="middle">Ricky!</textPath></text>
+        </svg>
+      </h2>
+      <img class="mascot payoff-photo reveal is-hidden" src="assets/images/ricky.png" alt="Ricky wearing a blue birthday hat" width="219" height="440" decoding="async">
       <ul class="affirm">
         <li class="reveal is-hidden">You are seen.</li>
         <li class="reveal is-hidden">You are valued.</li>
@@ -132,6 +152,7 @@
   <script src="js/story.js"></script>
   <script src="js/effects.js"></script>
   <script src="js/finale.js"></script>
+  <script src="js/extras.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

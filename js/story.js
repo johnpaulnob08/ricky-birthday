@@ -103,9 +103,11 @@
       b.innerHTML = '<span class="thing-phrase"></span><span class="thing-line"><span></span></span>';
       b.querySelector(".thing-phrase").textContent = t.phrase;
       b.querySelector(".thing-line span").textContent = t.line;
-      b.addEventListener("click", () =>
-        b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") === "true" ? "false" : "true")
-      );
+      let taps = 0;
+      b.addEventListener("click", () => {
+        b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") === "true" ? "false" : "true");
+        if (t.egg && ++taps === 3) { taps = 0; Toast.show(t.egg, 3200); }
+      });
       wrap.appendChild(b);
     });
   }

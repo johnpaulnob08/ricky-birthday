@@ -57,6 +57,7 @@
     gate.querySelectorAll("input, button").forEach((el) => (el.disabled = true));
     feedback.textContent = "Identity verified.";
     flash.classList.add("is-on");
+    Music.start(); // inside the tap, so browsers allow sound
     await wait(900);
     Screens.unlock();
     Screens.goTo("screen-unlock");

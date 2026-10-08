@@ -6,7 +6,7 @@
   flex-direction: column; align-items: center; justify-content: flex-start;
   gap: 1.25rem; text-align: center;
   padding: calc(env(safe-area-inset-top) + 3.75rem) max(1.25rem, env(safe-area-inset-right))
-           max(1.5rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+           calc(env(safe-area-inset-bottom) + 4.5rem) max(1.25rem, env(safe-area-inset-left));
   overflow-y: auto;
 }
 .screen.is-active { display: flex; animation: screenIn 0.7s var(--ease) both; }

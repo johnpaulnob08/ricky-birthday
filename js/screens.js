@@ -42,6 +42,7 @@ const Screens = (() => {
   function unlock() {
     unlocked = true;
     nav.toggle.hidden = false;
+    document.dispatchEvent(new Event("unlocked"));
   }
 
   function renderNav() {
@@ -52,16 +53,32 @@ const Screens = (() => {
       b.type = "button";
       b.textContent = s.dataset.title;
       b.disabled = !reached.has(s.id);
+      if (s === current) b.setAttribute("aria-current", "page");
       b.addEventListener("click", () => { closeNav(); goTo(s.id); });
       nav.sheet.appendChild(b);
     });
   }
 
-  function openNav()  { nav.sheet.hidden = false; nav.toggle.setAttribute("aria-expanded", "true"); }
-  function closeNav() { nav.sheet.hidden = true;  nav.toggle.setAttribute("aria-expanded", "false"); }
+  function openNav() {
+    renderNav();
+    nav.sheet.hidden = false;
+    nav.toggle.setAttribute("aria-expanded", "true");
+    nav.toggle.setAttribute("aria-label", "Close sections menu");
+    nav.toggle.textContent = "✕";
+    const first = nav.sheet.querySelector("button:not([disabled])");
+    if (first) first.focus();
+  }
+  function closeNav() {
+    nav.sheet.hidden = true;
+    nav.toggle.setAttribute("aria-expanded", "false");
+    nav.toggle.setAttribute("aria-label", "Open sections menu");
+    nav.toggle.textContent = "☰";
+  }
 
   nav.toggle.addEventListener("click", () => (nav.sheet.hidden ? openNav() : closeNav()));
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeNav(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !nav.sheet.hidden) { closeNav(); nav.toggle.focus(); }
+  });
 
   return { goTo, next, unlock, get unlocked() { return unlocked; } };
 })();

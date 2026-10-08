@@ -171,3 +171,66 @@
 .affirm { list-style: none; margin: 0.4rem 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; font-size: var(--step-1); font-weight: 600; }
 .glad { font-family: var(--font-letter); font-size: var(--step-1); }
 .with-love { font-family: var(--font-letter); font-style: italic; color: var(--glow); font-size: var(--step-1); }
+
+/* ---------- Music button ---------- */
+.music-btn {
+  position: fixed; z-index: 20;
+  left: max(0.75rem, env(safe-area-inset-left)); bottom: max(0.75rem, env(safe-area-inset-bottom));
+  width: var(--tap); padding: 0; border-radius: 50%; font-size: 0.95rem;
+  background: rgba(10, 22, 51, 0.7); backdrop-filter: blur(8px);
+}
+.music-btn.is-playing { box-shadow: 0 0 20px rgba(47, 107, 255, 0.55); }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed; z-index: 25; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 5.25rem);
+  max-width: min(90vw, 26rem); padding: 0.8rem 1.2rem; text-align: center;
+  background: rgba(10, 22, 51, 0.88); backdrop-filter: blur(10px);
+  border: 1px solid rgba(111, 168, 255, 0.4); border-radius: var(--radius);
+  box-shadow: 0 0 28px rgba(47, 107, 255, 0.3);
+  opacity: 0; translate: -50% 12px; pointer-events: none;
+  transition: opacity 0.35s var(--ease), translate 0.35s var(--ease);
+}
+.toast.is-on { opacity: 1; translate: -50% 0; }
+
+/* ---------- Easter egg 1: the tappable 27 ---------- */
+.years-num { all: unset; display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums; color: var(--glow); cursor: pointer; touch-action: manipulation; }
+.years-num:focus-visible { outline: 2px solid var(--glow); outline-offset: 6px; border-radius: 8px; }
+
+/* ---------- Easter egg 2: the tiny blue star ---------- */
+.tiny-star {
+  all: unset; position: absolute; z-index: 2;
+  top: calc(env(safe-area-inset-top) + 0.9rem); left: 0.9rem;
+  width: 44px; height: 44px; display: grid; place-items: center;
+  color: var(--glow); font-size: 0.75rem; cursor: pointer; touch-action: manipulation;
+  text-shadow: 0 0 10px var(--glow); opacity: 0.6; animation: twinkle 3.4s ease-in-out infinite;
+}
+.tiny-star:focus-visible { outline: 2px solid var(--glow); border-radius: 50%; }
+.tiny-star.is-found { animation: none; opacity: 0.18; }
+@keyframes twinkle { 50% { opacity: 0.15; } }
+
+/* ---------- Nav sheet polish ---------- */
+.nav-sheet button[aria-current="page"] { border-color: var(--glow); background: rgba(47, 107, 255, 0.32); }
+.nav-sheet button[disabled]::after { content: " · locked"; font-size: 0.8em; color: var(--ink-soft); }
+
+/* ---------- Ricky mascot (top of screens 2, 3, 4, 5, 7) ---------- */
+.mascot {
+  height: clamp(88px, 17dvh, 150px); width: auto; flex-shrink: 0;
+  transform-origin: 50% 100%;
+  animation: wiggle 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 8px 22px rgba(47, 107, 255, 0.5));
+  pointer-events: none; user-select: none; -webkit-user-drag: none;
+}
+@keyframes wiggle {
+  0%, 100% { rotate: -3.5deg; translate: 0 0; }
+  50% { rotate: 3.5deg; translate: 0 -4px; }
+}
+@media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
+
+/* ---------- Final screen: curved title + Ricky's photo ---------- */
+.payoff-title.arc { text-shadow: none; filter: drop-shadow(0 0 14px rgba(111, 168, 255, 0.7)) drop-shadow(0 2px 12px rgba(5, 11, 31, 0.9)); }
+.arc-svg { display: block; width: min(100%, 30rem); overflow: visible; }
+.arc-svg text { font-family: "Dancing Script", "Brush Script MT", "Segoe Script", cursive; font-weight: 700; fill: var(--ink); }
+.arc-svg .arc-line1 { font-size: 41px; }
+.arc-svg .arc-line2 { font-size: 84px; }
+.payoff-photo { height: clamp(120px, 22dvh, 200px); }

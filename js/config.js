@@ -26,7 +26,7 @@ window.SITE = {
   ],
 
   // Music: replace the file at this path (or change the path)
-  musicPath: "assets/audio/song.mp3",
+  musicPath: "assets/audio/ricky-song.mp3",
 
   // Screen 4 — the scan. One row per line: label ........ value
   scan: [
@@ -47,13 +47,17 @@ window.SITE = {
   memories: [
     { src: "assets/images/memory-01.jpg", alt: "Describe photo 1", caption: "Salamat sa Chocolait, Boss!😍" },
     { src: "assets/images/memory-02.jpg", alt: "Describe photo 2", caption: "Unsa gani imong pagsabot sa akong giingon ani? HAHAHAHA" },
-    { src: "assets/images/memory-03.jpg", alt: "Describe photo 3", caption: "Busog ra, Dong?" }
+    { src: "assets/images/memory-03.jpg", alt: "Describe photo 3", caption: "Busog ra, Dong?" },
+    { src: "assets/images/memory-04.jpg", alt: "Describe photo 4", caption: "Caption for memory 4" },
+    { src: "assets/images/memory-05.jpg", alt: "Describe photo 5", caption: "Caption for memory 5" },
+    { src: "assets/images/memory-06.jpg", alt: "Describe photo 6", caption: "Caption for memory 6" },
+    { src: "assets/images/memory-07.jpg", alt: "Describe photo 7", caption: "Caption for memory 7" }
   ],
 
   // Screen 7 — tap-to-reveal cards
   things: [
     { phrase: "DI PAGUTOM.", line: "Because apparently, every adventure begins with food." },
-    { phrase: "MUKBANGCH?", line: "A question capable of changing the entire direction of the day. You know na what I mean. HAHHAHA" },
+    { phrase: "MUKBANGCH?", line: "A question capable of changing the entire direction of the day. You know na what I mean. HAHHAHA", egg: "Say less. 👀 Where and when?" },
     { phrase: "KATULGON NA.", line: "The universal signal that the night is officially ending. Or katulgon sa shift. HAHAHAHA" }
   ],
 
