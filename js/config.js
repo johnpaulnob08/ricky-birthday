@@ -51,7 +51,27 @@ window.SITE = {
     { src: "assets/images/memory-04.jpg", alt: "Describe photo 4", caption: "Caption for memory 4" },
     { src: "assets/images/memory-05.jpg", alt: "Describe photo 5", caption: "Caption for memory 5" },
     { src: "assets/images/memory-06.jpg", alt: "Describe photo 6", caption: "Caption for memory 6" },
-    { src: "assets/images/memory-07.jpg", alt: "Describe photo 7", caption: "Caption for memory 7" }
+    { src: "assets/images/memory-07.jpg", alt: "Describe photo 7", caption: "Caption for memory 7" },
+    { src: "assets/images/memory-08.png", alt: "Describe photo 8", caption: "Gwapoha nimo Dong uy!" },
+    { src: "assets/images/memory-09.png", alt: "Describe photo 9", caption: "Oppa???" },
+    { src: "assets/images/memory-10.png", alt: "Describe photo 10", caption: "Ka cute ba HAHAHAHA" },
+    { src: "assets/images/memory-11.png", alt: "Describe photo 11", caption: "Arfffff" },
+    { src: "assets/images/memory-12.png", alt: "Describe photo 12", caption: "Gwapo jud, di malalis." },
+    { src: "assets/images/memory-13.png", alt: "Describe photo 13", caption: "Oo na, luluhod na." },
+    { src: "assets/images/memory-14.png", alt: "Describe photo 14", caption: "Caption for memory 14" },
+    { src: "assets/images/memory-15.jpg", alt: "Describe photo 15", caption: "Caption for memory 15" },
+    { src: "assets/images/memory-16.jpg", alt: "Describe photo 16", caption: "Caption for memory 16" },
+    { src: "assets/images/memory-17.jpg", alt: "Describe photo 17", caption: "Caption for memory 17" },
+    { src: "assets/images/memory-18.jpg", alt: "Describe photo 18", caption: "Caption for memory 18" },
+    { src: "assets/images/memory-19.jpg", alt: "Describe photo 19", caption: "Caption for memory 19" },
+    { src: "assets/images/memory-20.jpg", alt: "Describe photo 20", caption: "Caption for memory 20" },
+    { src: "assets/images/memory-21.jpg", alt: "Describe photo 21", caption: "Caption for memory 21" },
+    { src: "assets/images/memory-22.jpg", alt: "Describe photo 22", caption: "Caption for memory 22" },
+    { src: "assets/images/memory-23.jpg", alt: "Describe photo 23", caption: "Caption for memory 23" },
+    { src: "assets/images/memory-24.jpg", alt: "Describe photo 24", caption: "Caption for memory 24" },
+    { src: "assets/images/memory-25.jpg", alt: "Describe photo 25", caption: "Caption for memory 25" },
+    { src: "assets/images/memory-26.jpg", alt: "Describe photo 26", caption: "Caption for memory 26" },
+    { src: "assets/images/memory-27.jpg", alt: "Describe photo 27", caption: "Caption for memory 27" }
   ],
 
   // Screen 7 — tap-to-reveal cards

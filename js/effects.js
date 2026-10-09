@@ -1,228 +1,183 @@
-/* effects.css — screen-specific styling + reusable effects */
+/* effects.js — one canvas behind everything: calm glow, stars, confetti, particle "27" */
+const Fx = (() => {
+  const canvas = document.getElementById("fx");
+  const ctx = canvas.getContext("2d");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const COLORS = ["#6fa8ff", "#2f6bff", "#eaf1ff", "#9cc0ff", "#4a86ff"];
+  const rand = (a, b) => a + Math.random() * (b - a);
 
-/* ---------- Reveal helper ---------- */
-.reveal { transition: opacity 0.7s var(--ease), transform 0.7s var(--ease), visibility 0s; }
-.reveal.is-hidden { opacity: 0; transform: translateY(10px); visibility: hidden; pointer-events: none; }
+  let W = 0, H = 0, mode = "off", raf = 0, last = 0, clock = 0;
+  let motes = [], stars = [], bits = [], dots = [];
+  let dotsAlpha = 1, dotsTarget = 1, finaleStarted = false;
 
-/* ---------- Screen 1: locked system ---------- */
-.brand {
-  font-size: var(--step-5);
-  letter-spacing: 0.04em;
-  text-shadow: 0 0 28px rgba(111, 168, 255, 0.55), 0 0 2px rgba(255, 255, 255, 0.6);
-}
-.sub { color: var(--glow); letter-spacing: 0.22em; font-size: var(--step--1); }
-.status { color: var(--ink-soft); max-width: 24rem; }
+  // soft glow sprite, drawn many times (cheap)
+  const sprite = document.createElement("canvas");
+  sprite.width = sprite.height = 64;
+  (() => {
+    const g = sprite.getContext("2d");
+    const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, "rgba(190,215,255,1)");
+    gr.addColorStop(0.25, "rgba(111,168,255,0.55)");
+    gr.addColorStop(1, "rgba(47,107,255,0)");
+    g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+  })();
 
-.loader {
-  width: min(16rem, 70vw); height: 3px; border-radius: 3px;
-  background: rgba(111, 168, 255, 0.18); overflow: hidden;
-}
-.loader span {
-  display: block; height: 100%; width: 40%;
-  background: linear-gradient(90deg, transparent, var(--glow), transparent);
-  animation: scan 1.4s ease-in-out infinite;
-}
-@keyframes scan { from { transform: translateX(-100%); } to { transform: translateX(260%); } }
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    initMotes();
+    if (dots.length) formText("27", true);
+    if (mode !== "off") draw(0);
+  }
 
-.gate { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; width: 100%; max-width: 22rem; }
-.gate .verify { color: var(--glow); font-size: var(--step-1); }
-.gate label { color: var(--ink-soft); }
-.gate input {
-  width: 100%; min-height: 56px; padding: 0 1rem;
-  font: inherit; font-size: 1.25rem; /* 16px+ stops iOS zoom */
-  text-align: center; letter-spacing: 0.12em; color: var(--ink);
-  background: rgba(10, 22, 51, 0.7);
-  border: 1px solid rgba(111, 168, 255, 0.45); border-radius: var(--radius);
-}
-.gate input::placeholder { color: rgba(169, 187, 224, 0.5); }
-.gate input:focus { outline: none; border-color: var(--glow); box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.35); }
-.gate button[type="submit"] { width: 100%; letter-spacing: 0.14em; }
-.feedback { min-height: 1.6em; color: var(--ink-soft); font-size: var(--step--1); }
-.gate.shake { animation: shake 0.45s ease; }
-@keyframes shake {
-  20%, 60% { transform: translateX(-7px); }
-  40%, 80% { transform: translateX(7px); }
-}
+  function initMotes() {
+    const n = W < 600 ? 24 : 44;
+    motes = Array.from({ length: n }, () => ({
+      x: rand(0, W), y: rand(0, H), size: rand(10, 28),
+      vy: -rand(5, 16), a: rand(0.15, 0.5), ph: rand(0, 6.28)
+    }));
+  }
 
-/* Unlock flash */
-.flash {
-  position: fixed; inset: 0; z-index: 30; pointer-events: none; opacity: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(111, 168, 255, 0.9), rgba(47, 107, 255, 0.35) 40%, transparent 70%);
-}
-.flash.is-on { animation: flash 1.1s ease-out; }
-@keyframes flash {
-  0% { opacity: 0; transform: scale(0.4); }
-  35% { opacity: 1; }
-  100% { opacity: 0; transform: scale(1.8); }
-}
+  /* ---------- drawing ---------- */
+  function draw(dt) {
+    clock += dt;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = "lighter";
 
-/* ---------- Screen 2: system unlock ---------- */
-.granted { font-size: var(--step-3); letter-spacing: 0.08em; color: var(--glow); text-shadow: 0 0 24px rgba(111, 168, 255, 0.6); }
-.welcome { font-size: var(--step-1); }
-.progress-wrap { width: min(22rem, 82vw); display: flex; flex-direction: column; gap: 0.5rem; }
-.progress { height: 8px; border-radius: 8px; background: rgba(111, 168, 255, 0.16); overflow: hidden; }
-.progress span {
-  display: block; height: 100%; width: 0%;
-  background: linear-gradient(90deg, var(--electric), var(--glow));
-  box-shadow: 0 0 14px var(--glow);
-}
-.percent { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: var(--step--1); }
-.happy { font-size: var(--step-3); }
-.waiting { color: var(--ink-soft); }
+    const moteScale = mode === "final" ? 0.5 : 1;
+    for (const m of motes) {
+      m.y += m.vy * dt;
+      m.x += Math.sin(clock * 0.6 + m.ph) * 6 * dt;
+      if (m.y < -30) { m.y = H + 30; m.x = rand(0, W); }
+      ctx.globalAlpha = m.a * moteScale;
+      ctx.drawImage(sprite, m.x - m.size / 2, m.y - m.size / 2, m.size, m.size);
+    }
 
-/* ---------- Screen 3: the dodging button ---------- */
-.arena { position: relative; width: min(100%, 22rem); height: min(34dvh, 15rem); }
-.arena button {
-  position: absolute; inset: 0; margin: auto;
-  width: max-content; height: var(--tap);
-  translate: var(--dx, 0px) var(--dy, 0px);
-  transition: translate 0.35s var(--ease), background 0.25s var(--ease), box-shadow 0.25s var(--ease);
-  touch-action: manipulation;
-}
+    if (mode === "final") {
+      for (const s of stars) {
+        const fadeIn = Math.min(1, (clock - s.born) / 0.9);
+        if (fadeIn <= 0) continue;
+        ctx.globalAlpha = fadeIn * (0.55 + 0.45 * Math.sin(clock * s.speed + s.ph));
+        ctx.drawImage(sprite, s.x - s.r * 3, s.y - s.r * 3, s.r * 6, s.r * 6);
+      }
 
-/* ---------- Screen 4: scan ---------- */
-.scan-title { font-size: var(--step-1); letter-spacing: 0.18em; color: var(--glow); }
-.scan { list-style: none; margin: 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 0.7rem; text-align: left; }
-.scan-row { display: flex; align-items: baseline; gap: 0.5rem; font-size: var(--step--1); }
-.scan-k { flex: 0 1 auto; }
-.scan-dots { flex: 1 1 1rem; min-width: 0.75rem; border-bottom: 1px dotted rgba(169, 187, 224, 0.5); transform: translateY(-0.25em); }
-.scan-v { flex: 0 0 auto; color: var(--glow); text-shadow: 0 0 12px rgba(111, 168, 255, 0.6); }
-.scan-result { font-size: var(--step-1); line-height: 1.3; }
+      dotsAlpha += (dotsTarget - dotsAlpha) * (1 - Math.exp(-dt * 1.6));
+      for (const d of dots) {
+        if (clock >= d.born + d.delay) {
+          const k = 1 - Math.exp(-dt * 2.4);
+          d.x += (d.tx - d.x) * k; d.y += (d.ty - d.y) * k;
+        }
+        const shimmer = Math.sin(clock * 2 + d.ph) * 0.7;
+        ctx.globalAlpha = 0.85 * dotsAlpha;
+        ctx.drawImage(sprite, d.x + shimmer - d.size / 2, d.y - d.size / 2, d.size, d.size);
+      }
 
-/* ---------- Screen 5: 27 years ---------- */
-.years { font-size: clamp(2.6rem, 1.6rem + 6vw, 5rem); letter-spacing: 0.02em; text-shadow: 0 0 30px rgba(111, 168, 255, 0.5); }
-.years-num { display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums; color: var(--glow); }
-.years-sub { font-size: var(--step-1); }
-.years-note { color: var(--ink-soft); font-family: var(--font-letter); font-size: var(--step-1); line-height: 1.55; }
+      ctx.globalCompositeOperation = "source-over";
+      for (let i = bits.length - 1; i >= 0; i--) {
+        const b = bits[i];
+        b.y += b.vy * dt;
+        b.x += (b.vx + Math.sin(clock * 1.3 + b.ph) * b.sway) * dt;
+        b.rot += b.vr * dt;
+        if (b.y > H + 20) { bits.splice(i, 1); continue; }
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, (H - b.y) / (H * 0.3))) * 0.85;
+        ctx.translate(b.x, b.y); ctx.rotate(b.rot);
+        ctx.fillStyle = b.color;
+        ctx.fillRect(-b.w / 2, -b.h / 2, b.w, b.h);
+        ctx.restore();
+      }
+    }
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
+  }
 
-/* ---------- Screen 6: memories ---------- */
-.mem-title { font-size: var(--step-1); letter-spacing: 0.1em; line-height: 1.25; }
-.carousel-wrap { width: 100%; --card-w: min(78vw, 19rem); }
-.carousel {
-  display: flex; gap: 1rem; overflow-x: auto; scroll-snap-type: x mandatory;
-  padding: 1rem calc((100% - var(--card-w)) / 2);
-  scrollbar-width: none; overscroll-behavior-x: contain;
-}
-.carousel::-webkit-scrollbar { display: none; }
-.polaroid {
-  flex: 0 0 var(--card-w); scroll-snap-align: center; margin: 0;
-  background: #eef3ff; color: var(--navy); padding: 0.7rem 0.7rem 0.9rem;
-  border-radius: 6px; box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(47, 107, 255, 0.25);
-}
-.polaroid:nth-child(odd) { rotate: -1.5deg; }
-.polaroid:nth-child(even) { rotate: 1.2deg; }
-.photo { position: relative; aspect-ratio: 1; background: var(--navy); border-radius: 3px; overflow: hidden; }
-/* contain = never crops faces */
-.photo img { width: 100%; height: 100%; object-fit: contain; }
-.photo.is-missing { display: grid; place-items: center; color: var(--ink-soft); font-size: var(--step--1); padding: 1rem; background: linear-gradient(160deg, var(--deep), var(--navy)); }
-.polaroid figcaption { font-family: var(--font-letter); font-style: italic; font-size: var(--step-0); line-height: 1.35; padding-top: 0.7rem; }
-.carousel-ui { display: flex; align-items: center; justify-content: center; gap: 1rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-.carousel-ui button { width: var(--tap); padding: 0; border-radius: 50%; font-size: 1.4rem; }
+  function loop(now) {
+    const dt = Math.min(0.05, (now - last) / 1000 || 0);
+    last = now;
+    draw(dt);
+    raf = requestAnimationFrame(loop);
+  }
 
-/* ---------- Screen 7: things that make you, you ---------- */
-.things-title { font-size: var(--step-1); letter-spacing: 0.1em; line-height: 1.25; }
-.hint { color: var(--ink-soft); font-size: var(--step--1); }
-.things { width: 100%; display: flex; flex-direction: column; gap: 0.8rem; }
-.thing { display: flex; flex-direction: column; align-items: center; width: 100%; padding: 1.1rem 1.2rem; text-align: center; }
-.thing-phrase { font-size: var(--step-1); font-weight: 600; letter-spacing: 0.08em; }
-.thing-line { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s var(--ease); width: 100%; }
-.thing-line > span { overflow: hidden; min-height: 0; color: var(--ink-soft); font-family: var(--font-letter); font-size: var(--step-0); line-height: 1.5; }
-.thing[aria-expanded="true"] { background: rgba(47, 107, 255, 0.28); box-shadow: 0 0 28px rgba(47, 107, 255, 0.4); }
-.thing[aria-expanded="true"] .thing-line { grid-template-rows: 1fr; }
-.thing[aria-expanded="true"] .thing-line > span { padding-top: 0.6rem; }
+  function setMode(next) {
+    if (next === mode) return;
+    mode = next;
+    cancelAnimationFrame(raf);
+    if (mode === "off") { ctx.clearRect(0, 0, W, H); return; }
+    if (reduced && mode === "calm") { ctx.clearRect(0, 0, W, H); return; } // no ambient motion
+    if (reduced) { draw(0); return; }                                       // static final frame
+    last = performance.now();
+    raf = requestAnimationFrame(loop);
+  }
 
-/* ---------- Countdown ---------- */
-.countdown { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; width: min(100%, 24rem); }
-.cd-cell {
-  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
-  padding: 0.8rem 0.25rem;
-  background: rgba(10, 22, 51, 0.65); backdrop-filter: blur(6px);
-  border: 1px solid rgba(111, 168, 255, 0.3); border-radius: var(--radius);
-}
-.cd-num {
-  font-size: clamp(1.7rem, 1.1rem + 3.4vw, 2.6rem); font-weight: 600; line-height: 1.1;
-  font-variant-numeric: tabular-nums; color: var(--ink);
-  text-shadow: 0 0 18px rgba(111, 168, 255, 0.6);
-}
-.cd-label { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); }
+  /* ---------- finale pieces ---------- */
+  function spawnStars(count, over) {
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: rand(0, W), y: rand(0, H), r: rand(0.8, 2),
+        speed: rand(1, 2.6), ph: rand(0, 6.28),
+        born: clock + (reduced ? -1 : rand(0, over))
+      });
+    }
+  }
 
-/* ---------- Canvas behind everything ---------- */
-.fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-.screen { z-index: 1; }
+  function confettiBurst(count) {
+    for (let i = 0; i < count; i++) {
+      bits.push({
+        x: rand(0, W), y: rand(-H * 0.4, -10),
+        w: rand(3, 6), h: rand(6, 12), vy: rand(45, 110), vx: rand(-14, 14),
+        sway: rand(8, 26), ph: rand(0, 6.28), rot: rand(0, 6.28), vr: rand(-2, 2),
+        color: COLORS[(Math.random() * COLORS.length) | 0]
+      });
+    }
+  }
 
-/* ---------- Screen 8: the letter ---------- */
-.heart-title { font-family: var(--font-letter); font-weight: 400; font-style: italic; font-size: var(--step-3); text-shadow: 0 0 26px rgba(111, 168, 255, 0.45); }
-.letter { width: 100%; max-width: 30rem; text-align: left; display: flex; flex-direction: column; gap: 1.4rem; padding-block: 0.5rem 1rem; }
-.letter-p { font-family: var(--font-letter); font-size: clamp(1.12rem, 1.02rem + 0.5vw, 1.3rem); line-height: 1.7; color: var(--ink); }
-.letter-p:last-child { font-style: italic; color: var(--glow); }
+  async function formText(text, instant) {
+    try { await document.fonts.load("600 100px Sora"); } catch (e) { /* fallback font is fine */ }
+    const size = Math.min(W * 0.85, H * 0.46);
+    const off = document.createElement("canvas");
+    off.width = W; off.height = H;
+    const o = off.getContext("2d");
+    o.fillStyle = "#fff";
+    o.font = `600 ${size}px Sora, system-ui, sans-serif`;
+    o.textAlign = "center"; o.textBaseline = "middle";
+    o.fillText(text, W / 2, H / 2);
+    const px = o.getImageData(0, 0, W, H).data;
 
-/* ---------- Screen 9: the wish ---------- */
-.wish-title { font-family: var(--font-letter); font-weight: 400; font-style: italic; font-size: var(--step-1); color: var(--glow); }
-.wish { display: flex; flex-direction: column; gap: 1.4rem; width: 100%; }
-.wish-line { font-family: var(--font-letter); font-size: clamp(1.15rem, 1.05rem + 0.6vw, 1.4rem); line-height: 1.6; }
-.wish-always { font-size: var(--step-3); font-weight: 600; text-shadow: 0 0 24px rgba(111, 168, 255, 0.55); }
-.wish-sign { font-family: var(--font-letter); font-style: italic; color: var(--ink-soft); font-size: var(--step-1); }
+    let step = 5, pts;
+    do {
+      pts = [];
+      for (let y = 0; y < H; y += step)
+        for (let x = 0; x < W; x += step)
+          if (px[(y * W + x) * 4 + 3] > 128) pts.push([x, y]);
+      step++;
+    } while (pts.length > 850);
 
-/* ---------- Screen 10: the final surprise ---------- */
-.wait { font-size: var(--step-3); }
-.more { color: var(--ink-soft); font-size: var(--step-1); }
-.payoff { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; text-shadow: 0 2px 18px rgba(5, 11, 31, 0.9); }
-.payoff-title { font-size: var(--step-3); text-shadow: 0 0 30px rgba(111, 168, 255, 0.7), 0 2px 18px rgba(5, 11, 31, 0.9); }
-.affirm { list-style: none; margin: 0.4rem 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; font-size: var(--step-1); font-weight: 600; }
-.glad { font-family: var(--font-letter); font-size: var(--step-1); }
-.with-love { font-family: var(--font-letter); font-style: italic; color: var(--glow); font-size: var(--step-1); }
+    dots = pts.map(([tx, ty]) => ({
+      tx, ty,
+      x: instant ? tx : rand(0, W), y: instant ? ty : rand(0, H),
+      size: rand(9, 13), ph: rand(0, 6.28),
+      born: clock, delay: instant ? 0 : rand(0.2, 1.6)
+    }));
+  }
 
-/* ---------- Music button ---------- */
-.music-btn {
-  position: fixed; z-index: 20;
-  left: max(0.75rem, env(safe-area-inset-left)); bottom: max(0.75rem, env(safe-area-inset-bottom));
-  width: var(--tap); padding: 0; border-radius: 50%; font-size: 0.95rem;
-  background: rgba(10, 22, 51, 0.7); backdrop-filter: blur(8px);
-}
-.music-btn.is-playing { box-shadow: 0 0 20px rgba(47, 107, 255, 0.55); }
+  function finale() {
+    if (finaleStarted) return;
+    finaleStarted = true;
+    setMode("final");
+    spawnStars(reduced ? 90 : 130, 3.5);
+    if (!reduced) confettiBurst(90);
+    formText("27", reduced);
+    dotsTarget = 1;
+  }
 
-/* ---------- Toast ---------- */
-.toast {
-  position: fixed; z-index: 25; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 5.25rem);
-  max-width: min(90vw, 26rem); padding: 0.8rem 1.2rem; text-align: center;
-  background: rgba(10, 22, 51, 0.88); backdrop-filter: blur(10px);
-  border: 1px solid rgba(111, 168, 255, 0.4); border-radius: var(--radius);
-  box-shadow: 0 0 28px rgba(47, 107, 255, 0.3);
-  opacity: 0; translate: -50% 12px; pointer-events: none;
-  transition: opacity 0.35s var(--ease), translate 0.35s var(--ease);
-}
-.toast.is-on { opacity: 1; translate: -50% 0; }
+  window.addEventListener("resize", resize);
+  resize();
 
-/* ---------- Easter egg 1: the tappable 27 ---------- */
-.years-num { all: unset; display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums; color: var(--glow); cursor: pointer; touch-action: manipulation; }
-.years-num:focus-visible { outline: 2px solid var(--glow); outline-offset: 6px; border-radius: 8px; }
-
-/* ---------- Easter egg 2: the tiny blue star ---------- */
-.tiny-star {
-  all: unset; position: absolute; z-index: 2;
-  top: calc(env(safe-area-inset-top) + 0.9rem); left: 0.9rem;
-  width: 44px; height: 44px; display: grid; place-items: center;
-  color: var(--glow); font-size: 0.75rem; cursor: pointer; touch-action: manipulation;
-  text-shadow: 0 0 10px var(--glow); opacity: 0.6; animation: twinkle 3.4s ease-in-out infinite;
-}
-.tiny-star:focus-visible { outline: 2px solid var(--glow); border-radius: 50%; }
-.tiny-star.is-found { animation: none; opacity: 0.18; }
-@keyframes twinkle { 50% { opacity: 0.15; } }
-
-/* ---------- Nav sheet polish ---------- */
-.nav-sheet button[aria-current="page"] { border-color: var(--glow); background: rgba(47, 107, 255, 0.32); }
-.nav-sheet button[disabled]::after { content: " · locked"; font-size: 0.8em; color: var(--ink-soft); }
-
-/* ---------- Ricky mascot (top of screens 2, 3, 4, 5, 7) ---------- */
-.mascot {
-  height: clamp(88px, 17dvh, 150px); width: auto; flex-shrink: 0;
-  transform-origin: 50% 100%;
-  animation: wiggle 2.6s ease-in-out infinite;
-  filter: drop-shadow(0 8px 22px rgba(47, 107, 255, 0.5));
-  pointer-events: none; user-select: none; -webkit-user-drag: none;
-}
-@keyframes wiggle {
-  0%, 100% { rotate: -3.5deg; translate: 0 0; }
-  50% { rotate: 3.5deg; translate: 0 -4px; }
-}
-@media (prefers-reduced-motion: reduce) { .mascot { animation: none; } }
+  return {
+    setMode, finale,
+    dimNumber: (a) => { dotsTarget = a; if (reduced) { dotsAlpha = a; draw(0); } },
+    get finaleStarted() { return finaleStarted; }
+  };
+})();
