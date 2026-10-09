@@ -77,8 +77,16 @@
       track.appendChild(fig);
     });
 
-    const cardStep = () => (track.children[0] ? track.children[0].getBoundingClientRect().width + 16 : 300);
-    const index = () => Math.min(total - 1, Math.max(0, Math.round(track.scrollLeft / cardStep())));
+    // Layout distance between cards (unaffected by the polaroid rotation, which inflates getBoundingClientRect).
+    const cardStep = () => (track.children[1] ? track.children[1].offsetLeft - track.children[0].offsetLeft : 300);
+    // Current card from scroll progress: 0 at the far left, last card at the far right, evenly in between.
+    const index = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      if (max <= 0) return 0;
+      if (track.scrollLeft <= 2) return 0;
+      if (track.scrollLeft >= max - 2) return total - 1;
+      return Math.min(total - 1, Math.max(0, Math.round((track.scrollLeft / max) * (total - 1))));
+    };
     const update = () => (count.textContent = `${index() + 1} / ${total}`);
     const go = (dir) => track.scrollBy({ left: dir * cardStep(), behavior: reduced ? "auto" : "smooth" });
 
