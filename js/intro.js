@@ -118,22 +118,30 @@
   const arena = document.getElementById("arena");
   const readyBtn = document.getElementById("ready-btn");
   const dodgeMsg = document.getElementById("dodge-msg");
-  const dodgeLines = ["Too slow.", "Almost.", "You thought.", "Fine. Catch it."];
-  const MAX_DODGES = 4;
+  const dodgeLines = ["Too slow.", "Almost.", "You thought.", "Nope.", "Still no.", "Fine. Catch it."];
+  const MAX_DODGES = 6; // 5 scatters + 1 move to center, then the 7th click wins
   let dodges = 0;
   let justDodged = false;
   let won = false;
+  let lastX = 0, lastY = 0;
 
   function dodge() {
     const room = arena.getBoundingClientRect();
     const size = readyBtn.getBoundingClientRect();
-    const ease = 1 - dodges * 0.22; // each dodge travels less far = easier to catch
-    const maxX = Math.max(0, (room.width - size.width) / 2) * ease;
-    const maxY = Math.max(0, (room.height - size.height) / 2) * ease;
-    // push to the opposite side of where it is, with some randomness
-    const side = dodges % 2 === 0 ? 1 : -1;
-    const x = side * (0.5 + Math.random() * 0.5) * maxX;
-    const y = (Math.random() * 2 - 1) * maxY;
+    const pad = 16; // keep the button off the screen edges
+    const ease = 1; // full-screen range for every scatter
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const rangeX = Math.max(0, (vw - size.width) / 2 - pad) * ease;
+    const rangeY = Math.max(0, (vh - size.height) / 2 - pad) * ease;
+    const cx = room.left + room.width / 2; // button's resting center on screen
+    const cy = room.top + room.height / 2;
+    let x = 0, y = 0; // the 6th click (dodges === 5) skips the loop, so it stays 0,0 = back to center
+    for (let i = 0; dodges < 5 && i < 10; i++) {
+      x = vw / 2 + (Math.random() * 2 - 1) * rangeX - cx;
+      y = vh / 2 + (Math.random() * 2 - 1) * rangeY - cy;
+      if (Math.hypot(x - lastX, y - lastY) > 140) break; // don't land near where it just was
+    }
+    lastX = x; lastY = y;
     readyBtn.style.setProperty("--dx", x.toFixed(0) + "px");
     readyBtn.style.setProperty("--dy", y.toFixed(0) + "px");
     dodgeMsg.textContent = dodgeLines[dodges];

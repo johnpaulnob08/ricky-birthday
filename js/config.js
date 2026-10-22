@@ -48,18 +48,18 @@ window.SITE = {
     { src: "assets/images/memory-01.jpg", alt: "Describe photo 1", caption: "Salamat sa Chocolait, Boss!😍" },
     { src: "assets/images/memory-02.jpg", alt: "Describe photo 2", caption: "Unsa gani imong pagsabot sa akong giingon ani? HAHAHAHA" },
     { src: "assets/images/memory-03.jpg", alt: "Describe photo 3", caption: "Busog ra, Dong?" },
-    { src: "assets/images/memory-04.jpg", alt: "Describe photo 4", caption: "Caption for memory 4" },
-    { src: "assets/images/memory-05.jpg", alt: "Describe photo 5", caption: "Caption for memory 5" },
-    { src: "assets/images/memory-06.jpg", alt: "Describe photo 6", caption: "Caption for memory 6" },
-    { src: "assets/images/memory-07.jpg", alt: "Describe photo 7", caption: "Caption for memory 7" },
+    { src: "assets/images/memory-04.jpg", alt: "Describe photo 4", caption: "Cute kayka here jud. Lami kumuton ang cheeks" },
+    { src: "assets/images/memory-05.jpg", alt: "Describe photo 5", caption: "Kay fav nimo blue, ayan!" },
+    { src: "assets/images/memory-06.png", alt: "Describe photo 6", caption: "Thank you pogiii!" },
+    { src: "assets/images/memory-07.png", alt: "Describe photo 7", caption: "Thank you sa skinnn.😗" },
     { src: "assets/images/memory-08.png", alt: "Describe photo 8", caption: "Gwapoha nimo Dong uy!" },
     { src: "assets/images/memory-09.png", alt: "Describe photo 9", caption: "Oppa???" },
     { src: "assets/images/memory-10.png", alt: "Describe photo 10", caption: "Ka cute ba HAHAHAHA" },
     { src: "assets/images/memory-11.png", alt: "Describe photo 11", caption: "Arfffff" },
     { src: "assets/images/memory-12.png", alt: "Describe photo 12", caption: "Gwapo jud, di malalis." },
     { src: "assets/images/memory-13.png", alt: "Describe photo 13", caption: "Oo na, luluhod na." },
-    { src: "assets/images/memory-14.png", alt: "Describe photo 14", caption: "Caption for memory 14" },
-    { src: "assets/images/memory-15.jpg", alt: "Describe photo 15", caption: "Caption for memory 15" },
+    { src: "assets/images/memory-14.png", alt: "Describe photo 14", caption: "Thank you for always listening sa ako rants!" },
+    { src: "assets/images/memory-15.png", alt: "Describe photo 15", caption: "Sori, Dong! Muaaaa." },
     { src: "assets/images/memory-16.jpg", alt: "Describe photo 16", caption: "Caption for memory 16" },
     { src: "assets/images/memory-17.jpg", alt: "Describe photo 17", caption: "Caption for memory 17" },
     { src: "assets/images/memory-18.jpg", alt: "Describe photo 18", caption: "Caption for memory 18" },
@@ -71,7 +71,7 @@ window.SITE = {
     { src: "assets/images/memory-24.jpg", alt: "Describe photo 24", caption: "Caption for memory 24" },
     { src: "assets/images/memory-25.jpg", alt: "Describe photo 25", caption: "Caption for memory 25" },
     { src: "assets/images/memory-26.jpg", alt: "Describe photo 26", caption: "Caption for memory 26" },
-    { src: "assets/images/memory-27.jpg", alt: "Describe photo 27", caption: "Caption for memory 27" }
+    { src: "assets/images/memory-27.gif", alt: "Describe photo 27", caption: "Happiest Birthday, Ricky! 🩵" }
   ],
 
   // Screen 7 — tap-to-reveal cards
