@@ -66,11 +66,11 @@ window.SITE = {
     { src: "assets/images/memory-19.jpg", alt: "Describe photo 19", caption: "Damnnn. Gwapo na kaayo, cute pa." },
     { src: "assets/images/memory-20.jpeg", alt: "Describe photo 20", caption: "Bossenggg, ang singottt." },
     { src: "assets/images/memory-21.jpg", alt: "Describe photo 21", caption: "Ka cute sa babyyyyy. Bruh. Kagigil imong kagwapo'g kacute combi." },
-    { src: "assets/images/memory-22.jpg", alt: "Describe photo 22", caption: "Caption for memory 22" },
-    { src: "assets/images/memory-23.jpg", alt: "Describe photo 23", caption: "Caption for memory 23" },
-    { src: "assets/images/memory-24.jpg", alt: "Describe photo 24", caption: "Caption for memory 24" },
-    { src: "assets/images/memory-25.jpg", alt: "Describe photo 25", caption: "Caption for memory 25" },
-    { src: "assets/images/memory-26.jpg", alt: "Describe photo 26", caption: "Caption for memory 26" },
+    { src: "assets/images/memory-22.png", alt: "Describe photo 22", caption: "Kinsa imo gina capture ana?🤨" },
+    { src: "assets/images/memory-23.png", alt: "Describe photo 23", caption: "Sonyfroggy yarn?" },
+    { src: "assets/images/memory-24.jpg", alt: "Describe photo 24", caption: "Why so gwapoooooooo?" },
+    { src: "assets/images/memory-25.jpg", alt: "Describe photo 25", caption: "Mas taas ko. mwehehehe" },
+    { src: "assets/images/memory-26.jpg", alt: "Describe photo 26", caption: "Joke lang. Mas taas akong bossenggg. Mua muaaa" },
     { src: "assets/images/memory-27.gif", alt: "Describe photo 27", caption: "Happiest Birthday, Ricky! 🩵" }
   ],
 
